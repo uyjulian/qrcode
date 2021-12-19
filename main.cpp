@@ -29,9 +29,9 @@ public:
 		size_t	len	= str.length() + 1, cvlen;
 		char*	buf	= new char[len];
 		wcstombs_s(&cvlen, buf, len, str.c_str(), _TRUNCATE);
-		dm(L"original text= "+str);
-		dm(L"convert text = "+ttstr(buf));
-		dm(L"original len = "+ttstr((tjs_int)len)+" / convert len = "+ttstr((tjs_int)cvlen));
+		dm(TJS_W("original text= ")+str);
+		dm(TJS_W("convert text = ")+ttstr(buf));
+		dm(TJS_W("original len = ")+ttstr((tjs_int)len)+" / convert len = "+ttstr((tjs_int)cvlen));
 		buf[len-1]	= 0x0;
 
 		//	その他仕様
@@ -39,16 +39,16 @@ public:
 		tjs_int	qrVersion	= numparams > 2 && param[2]->Type() != tvtVoid ? param[2]->AsInteger() : QR_VRESION_S;
 		tjs_int	autoExtent	= numparams > 3 && param[3]->Type() != tvtVoid ? param[3]->AsInteger() : true;
 		tjs_int	maskPattern	= numparams > 4 && param[4]->Type() != tvtVoid ? param[4]->AsInteger() : -1;
-		dm(L"error correct level = "+ttstr(ecLevel)+" / version = "+ttstr(qrVersion)+" / auto extent = "+ttstr(autoExtent)+" / masking patter = "+ttstr(maskPattern));
+		dm(TJS_W("error correct level = ")+ttstr(ecLevel)+" / version = "+ttstr(qrVersion)+" / auto extent = "+ttstr(autoExtent)+" / masking patter = "+ttstr(maskPattern));
 
 		//	QRエンコード
 		CQR_Encode	*pQR_Encode	= new CQR_Encode;
 		BOOL	res = pQR_Encode->EncodeData(ecLevel, qrVersion, autoExtent, maskPattern, buf, len-1);
-		dm(L"Version = "+ttstr((tjs_int)pQR_Encode->m_nVersion)+" / Masking Patter = "+ttstr((tjs_int)pQR_Encode->m_nMaskingNo));
+		dm(TJS_W("Version = ")+ttstr((tjs_int)pQR_Encode->m_nVersion)+" / Masking Patter = "+ttstr((tjs_int)pQR_Encode->m_nMaskingNo));
 		if(!res)
 		{
 			if(result)
-				*result	= L"データが存在しないか、容量をオーバーしています";
+				*result	= TJS_W("データが存在しないか、容量をオーバーしています");
 			return TJS_S_OK;
 		}
 
@@ -57,16 +57,16 @@ public:
 		tjs_int	whsize		= symbolsize + QR_MARGIN * 2;
 		vals[0]	= whsize;
 		vals[1] = whsize;
-		objthis->FuncCall(0, L"setImageSize", NULL, &val, 2, pvals, objthis);
+		objthis->FuncCall(0, TJS_W("setImageSize"), NULL, &val, 2, pvals, objthis);
 
 		//	レイヤー情報取得
-/*		objthis->PropGet(0, L"imageWidth", NULL, &val, objthis);
+/*		objthis->PropGet(0, TJS_W("imageWidth"), NULL, &val, objthis);
 		tjs_int	imageWidth	= (tjs_int)val;
-		objthis->PropGet(0, L"imageHeight", NULL, &val, objthis);
+		objthis->PropGet(0, TJS_W("imageHeight"), NULL, &val, objthis);
 		tjs_int	imageHeight	= (tjs_int)val;
-*/		objthis->PropGet(0, L"mainImageBufferPitch", NULL, &val, objthis);
+*/		objthis->PropGet(0, TJS_W("mainImageBufferPitch"), NULL, &val, objthis);
 		tjs_int	bufferpitch	= (tjs_int)val;
-		objthis->PropGet(0, L"mainImageBufferForWrite", NULL, &val, objthis);
+		objthis->PropGet(0, TJS_W("mainImageBufferForWrite"), NULL, &val, objthis);
 		tjs_uint8*	bufferptr	= (tjs_uint8*)(tjs_int)val;
 
 		//	書き込み
@@ -104,7 +104,7 @@ public:
 		vals[2] = (tjs_int64)imageWidth;
 		vals[3] = (tjs_int64)imageHeight;
 		static tjs_uint32 update_hint = 0;
-		objthis->FuncCall(0, L"update", &update_hint, NULL, 4, pvals, objthis);
+		objthis->FuncCall(0, TJS_W("update"), &update_hint, NULL, 4, pvals, objthis);
 */
 		delete pQR_Encode;
 		delete [] buf;
